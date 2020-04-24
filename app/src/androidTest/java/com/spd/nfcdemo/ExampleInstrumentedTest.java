@@ -1,4 +1,4 @@
-package com.speedata.nfcdemo;
+package com.spd.nfcdemo;
 
 import android.content.Context;
 

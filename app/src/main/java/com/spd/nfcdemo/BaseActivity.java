@@ -1,5 +1,6 @@
-package com.speedata.nfcdemo;
+package com.spd.nfcdemo;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * @author zzc
  * @date 2019/12/9
  */
+@SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
 
     protected NfcAdapter mNfcAdapter;

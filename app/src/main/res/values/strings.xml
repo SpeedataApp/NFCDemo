@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">NFCDemo</string>
 
-    <string name="nfc_erro">请在系统设置启用NFC功能</string>
-    <string name="nfc_erro2">设备不支持NFC</string>
+    <string name="nfc_erro">Please enable the NFC function in the system settings</string>
+    <string name="nfc_erro2">The device does not support NFC</string>
 
-    <string name="tag_id">标签ID:</string>
-    <string name="tag_tech">标签类型:</string>
+    <string name="tag_id">Tag ID:</string>
+    <string name="tag_tech">Label type:</string>
 </resources>
