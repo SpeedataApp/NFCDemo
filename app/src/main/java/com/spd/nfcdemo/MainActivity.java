@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -36,10 +37,11 @@ import java.util.ArrayList;
  * @author zzc
  * @date 2019/12/9
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView tvTech;
     private TextView tvId;
+    private TextView tvWrite;
 
     ListView list = null;
     ArrayList<String> blockData;
@@ -63,11 +65,15 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         tvTech = findViewById(R.id.tv_nfc_tech);
         tvId = findViewById(R.id.tv_nfc_id);
+        tvWrite = findViewById(R.id.tv_nfc_write);
+
         list = findViewById(R.id.list);
 
         // Register the onClick listener with the implementation above
         isNFC = getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_NFC);
+
+        tvWrite.setOnClickListener(this);
     }
 
     @Override
@@ -91,6 +97,8 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    boolean isMafire = false;
+    boolean is15693 = false;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -105,8 +113,8 @@ public class MainActivity extends BaseActivity {
         String strId = StringUtils.byteArrayToString(byteId);
         tvId.setText(strId);
 
-        boolean isMafire = false;
-        boolean is15693 = false;
+        isMafire = false;
+        is15693 = false;
         //获取标签类型
         String[] techList = tag.getTechList();
         tvTech.setText("");
@@ -382,4 +390,65 @@ public class MainActivity extends BaseActivity {
         }// End of method
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.tv_nfc_write) {
+            if (isMafire) {
+                //mafire写卡
+                if (mfc == null) {
+                    return;
+                }
+                try {
+                    mfc.connect();
+                    boolean auth;
+                    for (int i = 4; i < 14; i++) {
+                        auth = mfc.authenticateSectorWithKeyA(i,
+                                MifareClassic.KEY_DEFAULT);
+                        if (auth) {
+                            // the last block of the sector is used for KeyA and
+                            // KeyB cannot be overwritted
+                            mfc.writeBlock(4 * i, "1313838438000000".getBytes());
+                        }
+                    }
+                    Toast.makeText(MainActivity.this,
+                            "1313838438000000 write successfully",
+                            Toast.LENGTH_SHORT).show();
+                    mfc.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        mfc.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            } else if (is15693) {
+                //15693写卡
+                if (mNfcV == null) {
+                    return;
+                }
+                try {
+                    mNfcV.connect();
+                    NfcVUtil mNfcVutil = new NfcVUtil(mNfcV);
+                    for (int i = 10; i < 20; i++) {
+                        mNfcVutil.writeBlock(i, new byte[]{1, 1, 1, 1});
+                    }
+
+                    Toast.makeText(MainActivity.this, "write success", Toast.LENGTH_SHORT)
+                            .show();
+                    mNfcV.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        mNfcV.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 }

@@ -6,4 +6,5 @@
 
     <string name="tag_id">标签ID:</string>
     <string name="tag_tech">标签类型:</string>
+    <string name="write">写卡</string>
 </resources>
