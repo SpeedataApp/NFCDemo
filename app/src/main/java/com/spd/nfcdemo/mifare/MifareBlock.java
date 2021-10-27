@@ -57,9 +57,11 @@ public class MifareBlock {
      */
     public MifareBlock(byte[] dataValue) {
         if (dataValue == null || dataValue.length != 16) {
-            throw new IllegalArgumentException("Invaid data array");
+            //throw new IllegalArgumentException("Invaid data array");
+        } else {
+            System.arraycopy(dataValue, 0, data, 0, dataValue.length);
         }
-        System.arraycopy(dataValue, 0, data, 0, dataValue.length);
+
 
     }
 
@@ -108,9 +110,11 @@ public class MifareBlock {
      */
     public void setData(byte[] dataValue) {
         if (dataValue == null || dataValue.length != 16) {
-            throw new IllegalArgumentException("Invaid data array");
+            //throw new IllegalArgumentException("Invaid data array");
+        } else {
+            System.arraycopy(dataValue, 0, data, 0, dataValue.length);
         }
-        System.arraycopy(dataValue, 0, data, 0, dataValue.length);
+
     }
 
     /**

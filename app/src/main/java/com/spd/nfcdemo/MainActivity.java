@@ -2,7 +2,6 @@ package com.spd.nfcdemo;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -34,8 +33,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * @author zzc
- * @date 2019/12/9
+ * @author xu
+ * @date 2021/10/27
  */
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -56,8 +55,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private boolean isNFC;
     private static PendingIntent mPendingIntent;
-    private static IntentFilter[] mFilters;
-    private static String[][] mTechLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -277,14 +274,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            startActivity(new Intent("android.settings.NFC_SETTINGS"));
-        }
-    };
+    Runnable runnable = () -> startActivity(new Intent("android.settings.NFC_SETTINGS"));
 
     /**
      * 检测工作,判断设备的NFC支持情况
@@ -313,7 +305,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @SuppressLint("HandlerLeak")
-    private Handler handler2 = new Handler() {
+    private final Handler handler2 = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             String[] contents = (String[]) msg.obj;
@@ -325,6 +317,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     };
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private void initNFC() {
         if (isNFC) {
             mAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -348,10 +341,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 } catch (IntentFilter.MalformedMimeTypeException e) {
                     throw new RuntimeException("fail", e);
                 }
-                mFilters = new IntentFilter[]{ndef,};
                 // Setup a tech list for all NfcF tags
-                mTechLists = new String[][]{new String[]{MifareClassic.class
-                        .getName()}};
                 Intent intent = getIntent();
                 resolveIntent(intent);
             } else {
